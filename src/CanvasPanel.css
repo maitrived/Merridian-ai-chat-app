@@ -1,0 +1,220 @@
+/* ── Canvas Panel ── */
+.canvas-panel {
+  width: 480px;
+  min-width: 320px;
+  background-color: var(--surface-container-lowest);
+  border-left: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  animation: slideInRight 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Panel Header ── */
+.canvas-panel-header {
+  height: 40px; /* Fixed smaller height */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.6rem;
+  border-bottom: 1px solid var(--outline-variant);
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  flex-shrink: 0;
+  gap: 0.25rem;
+  overflow: hidden; /* Prevent wrap */
+}
+
+.canvas-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.72rem; /* Smaller font */
+  color: var(--on-surface);
+  white-space: nowrap;
+}
+
+.canvas-panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem; /* Tighter gap */
+  flex-wrap: nowrap;
+}
+
+.canvas-action-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 3px 8px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-icon-only {
+  display: none;
+}
+
+/* Responsive button text hiding */
+@media (max-width: 1000px) {
+  .canvas-panel {
+    width: 380px;
+  }
+  .btn-text {
+    display: none;
+  }
+  .btn-icon-only {
+    display: inline;
+  }
+  .canvas-panel-header {
+    gap: 0.15rem;
+  }
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-5px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.canvas-action-pill:hover {
+  background: var(--primary-container);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 92, 186, 0.3);
+}
+
+.canvas-action-pill:active {
+  transform: translateY(0);
+}
+
+.canvas-action-pill.collapse-btn {
+  background: var(--surface-variant, #e1e2ec);
+  color: var(--on-surface-variant, #44474f);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.canvas-action-pill.collapse-btn:hover {
+  background: var(--outline-variant, #c4c7c5);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.canvas-action-pill.ai-action svg {
+  animation: sparkleRotate 2s infinite linear;
+}
+
+@keyframes sparkleRotate {
+  0% { transform: rotate(0) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+.canvas-node-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-container);
+  color: white;
+  font-size: 0.58rem;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  line-height: 1;
+}
+
+.canvas-icon {
+  font-size: 1rem;
+}
+
+.canvas-panel-hints {
+  display: none; /* Clean up header by hiding hints in the header */
+}
+
+@media (min-width: 1200px) {
+  .canvas-panel-hints {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+  }
+}
+
+/* ── React Flow Wrapper ── */
+.canvas-flow-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Override react-flow controls styling to match our theme */
+.canvas-flow-wrapper .react-flow__controls button {
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+  color: var(--on-surface-variant);
+  width: 26px;
+  height: 26px;
+  transition: background 0.2s ease;
+}
+.canvas-flow-wrapper .react-flow__controls button:hover {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+}
+.canvas-flow-wrapper .react-flow__controls button svg {
+  fill: currentColor;
+}
+
+/* ── Empty State Overlay ── */
+.canvas-empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  text-align: center;
+  padding: 2rem;
+  z-index: 1;
+}
+
+.canvas-empty-icon {
+  font-size: 2rem;
+  color: var(--primary);
+  opacity: 0.25;
+  margin-bottom: 0.75rem;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50%       { opacity: 0.45; transform: scale(1.1); }
+}
+
+.canvas-empty-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--on-surface-variant);
+  opacity: 0.5;
+  margin-bottom: 0.4rem;
+}
+
+.canvas-empty-sub {
+  font-size: 0.72rem;
+  color: var(--on-surface-variant);
+  opacity: 0.4;
+  line-height: 1.6;
+}

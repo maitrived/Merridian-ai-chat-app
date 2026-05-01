@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c1c6d5",
+                    "error-container": "#ffdad6",
+                    "primary": "#004e9f",
+                    "background": "#fcf8fb",
+                    "on-primary": "#ffffff",
+                    "primary-fixed": "#d7e3ff",
+                    "surface-container-high": "#eae7ea",
+                    "surface-container": "#f0edef",
+                    "on-tertiary-container": "#e8e8e8",
+                    "outline": "#727784",
+                    "on-secondary-fixed": "#1a1c1d",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#fcf8fb",
+                    "on-error-container": "#93000a",
+                    "on-surface-variant": "#414753",
+                    "surface-container-low": "#f6f3f5",
+                    "on-primary-fixed-variant": "#00458e",
+                    "tertiary": "#4e5051",
+                    "surface-container-highest": "#e4e2e4",
+                    "on-surface": "#1b1b1d",
+                    "secondary-fixed": "#e2e2e4",
+                    "on-secondary-fixed-variant": "#454749",
+                    "on-primary-fixed": "#001b3e",
+                    "inverse-on-surface": "#f3f0f2",
+                    "on-error": "#ffffff",
+                    "secondary-fixed-dim": "#c6c6c8",
+                    "surface": "#fcf8fb",
+                    "tertiary-fixed-dim": "#c6c6c7",
+                    "on-tertiary-fixed-variant": "#454747",
+                    "secondary": "#5d5e60",
+                    "tertiary-container": "#676868",
+                    "inverse-primary": "#aac7ff",
+                    "on-primary-container": "#dfe8ff",
+                    "tertiary-fixed": "#e2e2e2",
+                    "on-background": "#1b1b1d",
+                    "surface-variant": "#e4e2e4",
+                    "primary-container": "#0066cc",
+                    "on-secondary-container": "#616365",
+                    "secondary-container": "#dfdfe1",
+                    "surface-dim": "#dcd9dc",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#aac7ff",
+                    "surface-tint": "#005cba",
+                    "inverse-surface": "#303032",
+                    "on-tertiary-fixed": "#1a1c1c",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "xl": "64px",
+                    "xs": "8px",
+                    "md": "24px",
+                    "gutter": "20px",
+                    "lg": "40px",
+                    "sm": "16px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "1.1", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-md": ["13px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "body-lg": ["17px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "1.3", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-effect {
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar-active {
+            background-color: #ffffff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-on-surface bg-surface-container-lowest">
+<!-- SideNavBar Component -->
+<aside class="h-screen w-64 border-r border-gray-200/30 bg-gray-50/50 backdrop-blur-2xl flex flex-col py-6 space-y-1 z-40">
+<div class="text-xl font-bold text-gray-950 px-6 mb-6 flex items-center gap-2">
+<span class="w-8 h-8 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</span>
+<span>Nexus Local AI</span>
+</div>
+<div class="px-4 mb-4">
+<button class="w-full flex items-center gap-3 bg-white dark:bg-gray-800 text-blue-600 shadow-sm rounded-lg py-2 px-3 transition-all active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+<span class="font-label-md text-label-md">New Chat</span>
+</button>
+</div>
+<nav class="flex-1 space-y-1 overflow-y-auto px-2">
+<div class="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">History</div>
+<a class="flex items-center gap-3 text-gray-600 py-2 px-3 mx-2 hover:bg-gray-200/40 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md text-label-md truncate">Project Synthesis Redesign</span>
+</a>
+<a class="flex items-center gap-3 text-gray-600 py-2 px-3 mx-2 hover:bg-gray-200/40 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md text-label-md truncate">App Performance Audit</span>
+</a>
+<a class="flex items-center gap-3 text-gray-600 py-2 px-3 mx-2 hover:bg-gray-200/40 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-md text-label-md truncate">Drafting Q3 Strategy</span>
+</a>
+<div class="px-4 py-2 mt-6 text-xs font-semibold text-gray-400 uppercase tracking-wider">Workspace</div>
+<a class="flex items-center gap-3 text-gray-600 py-2 px-3 mx-2 hover:bg-gray-200/40 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-md text-label-md">Prompts</span>
+</a>
+<a class="flex items-center gap-3 text-gray-600 py-2 px-3 mx-2 hover:bg-gray-200/40 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="bg-primary-fixed/30 p-4 rounded-xl mb-4 border border-primary/10">
+<p class="font-label-md text-label-md text-primary mb-2">Workspace Premium</p>
+<p class="text-[11px] text-on-surface-variant leading-relaxed mb-3">Get advanced local models and multimodal processing.</p>
+<button class="w-full py-2 bg-primary-container text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity">Get Plus</button>
+</div>
+<div class="flex items-center gap-3 p-2 hover:bg-gray-200/40 rounded-xl transition-all cursor-pointer">
+<img alt="Professional User Profile" class="w-10 h-10 rounded-full border border-gray-200" data-alt="Close-up portrait of a professional man with a friendly expression in a modern office environment, soft daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxwThUBzFyoVLk_KxBUfo1_gNgNwA0I6GCwLmC7exI4i10CSKLNd7Ohm1Z7VW3LpoV3MvnuLUxW-esCKpnqT1pinBHwh925WoRbP133wqmMOZyk_sl5oMEFopx9skwcllJXSgvB_lQApmydDDOmE-4tWnNFOo-wsKYF6vjzmP3PnjHz4SYse9Y1cnVYjD3WU6uG4utjIFxGfimrMZTyzQvJ7TyejTxozkjK1CZiSTe4GeMck4FTcbLNZK-Jwul1V2e2d7tSLSfmIY"/>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-md text-label-md text-on-surface truncate">Marcus Chen</p>
+<p class="text-[11px] text-gray-500 truncate">Premium Account</p>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-sm">more_vert</span>
+</div>
+</div>
+</aside>
+<!-- Main Chat Canvas -->
+<main class="flex-1 flex flex-col relative bg-white">
+<!-- TopAppBar Component -->
+<header class="docked full-width top-0 z-50 bg-white/85 backdrop-blur-3xl border-b border-gray-200/50 shadow-sm flex justify-between items-center w-full px-6 py-3">
+<div class="flex items-center gap-4">
+<span class="font-headline-sm text-headline-sm text-gray-900 tracking-tight">Project Synthesis Redesign</span>
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary-container text-[10px] font-bold rounded uppercase tracking-widest">Local Llama 3</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-gray-500 hover:bg-gray-100/50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+<button class="p-2 text-gray-500 hover:bg-gray-100/50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+</button>
+<button class="p-2 text-gray-500 hover:bg-gray-100/50 rounded-full transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Message History Canvas -->
+<section class="flex-1 overflow-y-auto pt-10 pb-32">
+<div class="max-w-[800px] mx-auto px-10 space-y-10">
+<!-- AI Message -->
+<div class="flex items-start gap-4 group">
+<div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-gray-400 text-lg">smart_toy</span>
+</div>
+<div class="flex-1 space-y-3">
+<div class="bg-[#F5F5F7] text-[#1D1D1F] p-4 rounded-2xl rounded-tl-none font-body-md text-body-md leading-relaxed shadow-sm">
+                            Hello Marcus! I've analyzed your project synthesis requirements. I've prepared a draft that focuses on minimalism and efficiency. Would you like to review the core architecture or the visual tokens first?
+                        </div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+<button class="p-1.5 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+</button>
+<button class="p-1.5 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">refresh</span>
+</button>
+</div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-start gap-4 flex-row-reverse group">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white text-lg" style="font-variation-settings: 'FILL' 1;">person</span>
+</div>
+<div class="flex-1 flex flex-col items-end space-y-3">
+<div class="bg-primary-container text-white p-4 rounded-2xl rounded-tr-none font-body-md text-body-md leading-relaxed shadow-sm">
+                            Let's start with the visual tokens. I want to see a professional redesign of the 'Nexus Local AI' interface. Focus on Apple's aesthetic—lots of white space and glassmorphism.
+                        </div>
+</div>
+</div>
+<!-- AI Message with Card Content -->
+<div class="flex items-start gap-4 group">
+<div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-gray-400 text-lg">smart_toy</span>
+</div>
+<div class="flex-1 space-y-6">
+<div class="bg-[#F5F5F7] text-[#1D1D1F] p-4 rounded-2xl rounded-tl-none font-body-md text-body-md leading-relaxed shadow-sm">
+                            Understood. Here is a conceptual bento layout for the dashboard redesign. I've incorporated translucent layers and a high-contrast typography hierarchy.
+                        </div>
+<!-- Bento Grid Visual -->
+<div class="grid grid-cols-4 gap-4 max-w-[600px]">
+<div class="col-span-2 row-span-2 bg-[#F5F5F7] rounded-3xl p-6 border border-gray-200/50 flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-primary text-3xl">insights</span>
+<div>
+<p class="font-headline-sm text-headline-sm text-on-surface">Precision Analytics</p>
+<p class="text-xs text-gray-500 mt-1">Real-time local processing metrics</p>
+</div>
+</div>
+<div class="col-span-2 bg-primary-fixed/40 rounded-3xl p-6 border border-primary/10 flex items-center justify-between">
+<div>
+<p class="font-label-md text-label-md text-primary">Model Status</p>
+<p class="font-headline-sm text-headline-sm">Active</p>
+</div>
+<div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+</div>
+<div class="bg-gray-900 rounded-3xl p-6 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-3xl">dark_mode</span>
+</div>
+<div class="bg-surface-container rounded-3xl p-6 border border-gray-200/50 flex items-center justify-center">
+<span class="material-symbols-outlined text-gray-600 text-3xl">auto_awesome_motion</span>
+</div>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+</button>
+<button class="p-1.5 text-gray-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-sm">thumb_up</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Loading State Hint -->
+<div class="flex items-center gap-3 text-gray-400">
+<div class="flex space-x-1">
+<div class="w-1.5 h-1.5 bg-gray-300 rounded-full animate-pulse"></div>
+<div class="w-1.5 h-1.5 bg-gray-300 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+<div class="w-1.5 h-1.5 bg-gray-300 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+</div>
+<span class="text-xs italic">Nexus is thinking...</span>
+</div>
+</div>
+</section>
+<!-- Floating Message Input Area -->
+<footer class="absolute bottom-0 left-0 right-0 p-8 flex justify-center z-50">
+<div class="w-full max-w-[800px] relative">
+<!-- Suggested Prompts -->
+<div class="flex gap-2 mb-4 justify-center">
+<button class="px-4 py-1.5 bg-white border border-[#E5E5E7] text-[#1D1D1F] rounded-full text-xs font-medium hover:bg-gray-50 transition-colors shadow-sm">Refine UI tokens</button>
+<button class="px-4 py-1.5 bg-white border border-[#E5E5E7] text-[#1D1D1F] rounded-full text-xs font-medium hover:bg-gray-50 transition-colors shadow-sm">Export to Figma</button>
+<button class="px-4 py-1.5 bg-white border border-[#E5E5E7] text-[#1D1D1F] rounded-full text-xs font-medium hover:bg-gray-50 transition-colors shadow-sm">Change model</button>
+</div>
+<div class="glass-effect bg-white/85 border border-gray-200/50 rounded-3xl shadow-2xl p-2 flex items-end gap-2 group focus-within:border-primary/30 transition-all">
+<button class="p-3 text-gray-400 hover:text-primary-container transition-colors rounded-2xl">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 py-3 font-body-md text-body-md resize-none max-h-48" placeholder="Message Nexus Local AI..." rows="1"></textarea>
+<div class="flex items-center gap-1 p-1">
+<button class="p-2 text-gray-400 hover:text-primary-container transition-colors rounded-xl">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+</button>
+<button class="p-3 bg-primary-container text-white rounded-2xl shadow-lg hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined leading-none" data-icon="arrow_upward">arrow_upward</span>
+</button>
+</div>
+</div>
+<div class="text-[11px] text-gray-400 text-center mt-3 tracking-wide">
+                    Nexus Local AI may provide inaccurate information. Verify critical data locally.
+                </div>
+</div>
+</footer>
+</main>
+</body></html>

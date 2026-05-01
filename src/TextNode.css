@@ -1,0 +1,248 @@
+/* ── TextNode Card ── */
+.text-node {
+  background: #ffffff;
+  border: 1.5px solid var(--node-accent, #5b8dee);
+  border-radius: 14px;
+  width: 260px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  font-family: inherit;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  overflow: visible; /* allow handles to overflow the card bounds */
+}
+
+.text-node:hover {
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.13);
+  transform: translateY(-1px);
+}
+
+/* ReactFlow adds .selected when the node is clicked */
+.text-node.selected,
+.react-flow__node.selected .text-node {
+  box-shadow: 0 0 0 2px var(--node-accent, #5b8dee), 0 6px 24px rgba(0,0,0,0.12);
+}
+
+/* ── Header / Drag bar ── */
+.text-node-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.65rem;
+  background: var(--node-bg, rgba(91,141,238,0.08));
+  border-bottom: 1px solid color-mix(in srgb, var(--node-accent, #5b8dee) 20%, transparent);
+  border-radius: 12px 12px 0 0;
+  cursor: grab;
+  user-select: none;
+}
+
+.text-node-header:active {
+  cursor: grabbing;
+}
+
+.text-node-type-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--node-accent, #5b8dee);
+}
+
+.text-node-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--node-accent, #5b8dee);
+  flex-shrink: 0;
+}
+
+.text-node-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.text-node-action-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--node-accent, #5b8dee);
+  opacity: 0.4;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.text-node-action-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.text-node-drag-grip {
+  font-size: 0.9rem;
+  color: var(--node-accent, #5b8dee);
+  opacity: 0.4;
+  line-height: 1;
+  letter-spacing: -1px;
+  transition: opacity 0.15s;
+}
+.text-node-header:hover .text-node-drag-grip {
+  opacity: 0.75;
+}
+
+/* ── Content ── */
+.text-node-body {
+  padding: 0.6rem 0.75rem 0.65rem;
+}
+
+.text-node-content {
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: #1e1e2e;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.text-node-content.truncated {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-node-expand-btn {
+  margin-top: 0.35rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.67rem;
+  font-weight: 600;
+  color: var(--node-accent, #5b8dee);
+  cursor: pointer;
+  font-family: inherit;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+.text-node-expand-btn:hover { opacity: 1; }
+
+.text-node-generating {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--node-accent, #5b8dee);
+  opacity: 0.8;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ── Connection Handles ── 
+   Always slightly visible so users know they can connect;
+   grow on node hover for easy targeting.                    */
+.node-handle {
+  width: 10px !important;
+  height: 10px !important;
+  background: var(--node-accent, #5b8dee) !important;
+  border: 2px solid #fff !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 0 1.5px var(--node-accent, #5b8dee) !important;
+  opacity: 0.35;
+  transition: opacity 0.2s ease, transform 0.15s ease !important;
+}
+
+.text-node:hover .node-handle,
+.react-flow__node:hover .node-handle {
+  opacity: 1;
+}
+
+.node-handle:hover {
+  transform: scale(1.5) !important;
+  opacity: 1 !important;
+  cursor: crosshair !important;
+}
+
+/* Distinguish source vs target handles subtly */
+.react-flow__handle-left,
+.react-flow__handle-top {
+  /* target handles: slightly smaller */
+}
+
+/* ── Inline Edit ── */
+.text-node-edit-input {
+  width: 100%;
+  min-height: 80px;
+  border: 1px solid var(--node-accent, #5b8dee);
+  border-radius: 6px;
+  padding: 4px 6px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  color: #1e1e2e;
+  resize: vertical;
+  background: rgba(255, 255, 255, 0.9);
+  outline: none;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.text-node-edit-input:focus {
+  border-color: var(--node-accent, #5b8dee);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--node-accent, #5b8dee) 20%, transparent);
+}
+
+/* ── Context Menu ── */
+.text-node-context-menu {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  background: var(--surface-container-high, #ffffff);
+  border: 1px solid var(--outline-variant, #e0e0e0);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  min-width: 140px;
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.context-menu-item {
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--on-surface, #1e1e2e);
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.context-menu-item:hover {
+  background: var(--surface-container-highest, #f0f0f0);
+}
+
+.context-menu-item.delete {
+  color: #d32f2f;
+}
+
+.context-menu-item.delete:hover {
+  background: rgba(211, 47, 47, 0.1);
+}
+
+.context-menu-divider {
+  height: 1px;
+  background: var(--outline-variant, #e0e0e0);
+  margin: 2px 0;
+}
