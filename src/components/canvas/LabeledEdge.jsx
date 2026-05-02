@@ -8,7 +8,7 @@ import {
   useNodes,
 } from '@xyflow/react';
 import { Sparkles } from 'lucide-react';
-import { CanvasActionContext } from './CanvasContext';
+import { CanvasActionContext } from '../../context/CanvasContext';
 import './LabeledEdge.css';
 
 function LabeledEdge({

@@ -3,8 +3,8 @@ import { MessageSquarePlus, PanelLeft, Settings, Send, Paperclip, ChevronDown, N
 import { useNodesState, useEdgesState } from '@xyflow/react';
 import ReactMarkdown from 'react-markdown';
 import mammoth from 'mammoth';
-import CanvasPanel from './CanvasPanel';
-import { supabase } from './supabaseClient';
+import CanvasPanel from './components/canvas/CanvasPanel';
+import { supabase } from './lib/supabaseClient';
 import './App.css';
 
 function App() {
@@ -705,7 +705,7 @@ function App() {
           <div className="logo-icon">
             <Bot size={14} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.02em' }}>Nexus</span>
+          <span style={{ fontWeight: 700, fontSize: '0.9rem', letterSpacing: '-0.02em' }}>Merridian</span>
         </div>
         
         <button className="new-chat-btn" onClick={createNewChat}>
@@ -876,7 +876,7 @@ function App() {
                   value={input}
                   onChange={handleInput}
                   onKeyDown={handleKeyDown}
-                  placeholder="Message Nexus..."
+                  placeholder="Message Merridian..."
                   rows={1}
                 />
               </div>
@@ -892,7 +892,7 @@ function App() {
               </div>
             </div>
             <div style={{ marginTop: '0.4rem', fontSize: '0.6rem', color: 'var(--on-surface-variant)', opacity: 0.6 }}>
-               Nexus Local AI may provide inaccurate information. Verify critical data.
+               Merridian Local AI may provide inaccurate information. Verify critical data.
             </div>
           </div>
         </main>

@@ -14,7 +14,7 @@ import { toPng } from 'html-to-image';
 import '@xyflow/react/dist/style.css';
 import TextNode from './TextNode';
 import LabeledEdge from './LabeledEdge';
-import { CanvasActionContext } from './CanvasContext';
+import { CanvasActionContext } from '../../context/CanvasContext';
 import './CanvasPanel.css';
 
 // Stable references — defined outside component so React doesn't re-register on every render

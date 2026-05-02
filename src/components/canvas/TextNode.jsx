@@ -1,7 +1,7 @@
 import { memo, useState, useEffect, useContext } from 'react';
 import { Handle, Position, useReactFlow, useNodes, useEdges } from '@xyflow/react';
 import { MessageSquare, GitBranch, Split, Loader2 } from 'lucide-react';
-import { CanvasActionContext } from './CanvasContext';
+import { CanvasActionContext } from '../../context/CanvasContext';
 import './TextNode.css';
 
 const NODE_COLORS = {
