@@ -359,18 +359,50 @@
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
   z-index: 4;
+  pointer-events: auto;
+}
+
+.message-actions-container {
+  display: flex;
+  gap: 6px;
+  margin: 0 12px;
+  padding-bottom: 4px;
+  opacity: 0;
+  transform: translateY(4px) scale(0.9);
+  transition: opacity 0.18s ease, transform 0.18s ease;
   pointer-events: none;
 }
 
-.message-wrapper:hover .send-to-canvas-btn {
+.message-wrapper:hover .message-actions-container {
   opacity: 1;
   transform: translateY(0) scale(1);
   pointer-events: auto;
 }
 
-.send-to-canvas-btn:hover {
+.message-actions-container.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-actions-container.bot {
+  align-self: flex-start;
+  flex-direction: row;
+}
+
+.message-actions-container .icon-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  box-shadow: var(--shadow-sm);
+  background: var(--surface-container-low);
+  border: 1px solid var(--outline-variant);
+}
+
+.message-actions-container .icon-btn:hover {
   background: var(--primary);
-  transform: scale(1.05) !important;
+  color: white;
+  border-color: var(--primary);
+  transform: scale(1.05);
 }
 
 .avatar {

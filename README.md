@@ -104,26 +104,27 @@ ai-chat-app/
 ├── public/                         # Static assets (favicon, icons)
 ├── src/
 │   ├── components/
-│   │   └── canvas/                 # Thinking Canvas components
-│   │       ├── CanvasPanel.jsx     # Main canvas panel + toolbar
-│   │       ├── CanvasPanel.css
-│   │       ├── TextNode.jsx        # Draggable idea card node
-│   │       ├── TextNode.css
-│   │       ├── LabeledEdge.jsx     # Custom edge with inline labels
-│   │       └── LabeledEdge.css
+│   │   ├── auth/                   # Authentication UI
+│   │   ├── canvas/                 # Thinking Canvas components
+│   │   ├── chat/                   # Main chat interface and inputs
+│   │   ├── document/               # Document editing/viewing panel
+│   │   ├── layout/                 # Application layout (Sidebar)
+│   │   └── settings/               # Settings modals
 │   ├── context/
 │   │   └── CanvasContext.js        # React context for canvas actions
+│   ├── hooks/
+│   │   ├── useAppLayout.js         # Core layout state logic
+│   │   ├── useCanvasAI.js          # Graph-based AI reasoning tools
+│   │   ├── useChat.js              # Streaming LLM message logic
+│   │   └── useDocuments.js         # Document parsing and state
 │   ├── lib/
+│   │   ├── storage.js              # Supabase abstraction layer
 │   │   └── supabaseClient.js       # Supabase client singleton
-│   ├── assets/
-│   ├── App.jsx                     # Root component & all app logic
+│   ├── App.jsx                     # Root orchestrator component
 │   ├── App.css                     # Main stylesheet
 │   ├── index.css                   # Global CSS variables & resets
 │   └── main.jsx                    # App entry point
-├── docs/
-│   └── supabase_schema.sql         # Database schema
-├── scripts/
-│   └── test-crash.js               # Puppeteer smoke test script
+├── docs/                           # Internal documentation and guides
 ├── .env                            # Environment variables (not committed)
 ├── index.html
 ├── package.json
