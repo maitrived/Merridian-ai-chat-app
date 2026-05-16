@@ -14,7 +14,7 @@ const apiProxyPlugin = () => ({
       req.on('data', chunk => { body += chunk.toString() })
       req.on('end', async () => {
         try {
-          const { messages, model } = JSON.parse(body)
+          const { messages, model, stream = true, options = {} } = JSON.parse(body)
           
           const modelMap = {
             'gemini-1.5-flash': 'meta/llama-3.1-8b-instruct',
@@ -32,8 +32,8 @@ const apiProxyPlugin = () => ({
             body: JSON.stringify({
               model: nimModel,
               messages: messages,
-              stream: true,
-              temperature: 0.5,
+              stream: stream,
+              temperature: options.temperature || 0.5,
               top_p: 1,
               max_tokens: 1024,
             }),
@@ -47,27 +47,32 @@ const apiProxyPlugin = () => ({
             return;
           }
 
-          res.setHeader('Content-Type', 'text/event-stream');
-          res.setHeader('Cache-Control', 'no-cache');
-          res.setHeader('Connection', 'keep-alive');
+          if (stream) {
+            res.setHeader('Content-Type', 'text/event-stream');
+            res.setHeader('Cache-Control', 'no-cache');
+            res.setHeader('Connection', 'keep-alive');
 
-          if (nvidiaRes.body) {
-            const reader = nvidiaRes.body.getReader();
-            
-            const stream = async () => {
-              try {
-                while (true) {
-                  const { done, value } = await reader.read();
-                  if (done) break;
-                  res.write(value);
+            if (nvidiaRes.body) {
+              const reader = nvidiaRes.body.getReader();
+              const streamFunc = async () => {
+                try {
+                  while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    res.write(value);
+                  }
+                } finally {
+                  res.end();
                 }
-              } finally {
-                res.end();
-              }
-            };
-            stream();
+              };
+              streamFunc();
+            } else {
+              res.end();
+            }
           } else {
-            res.end();
+            const data = await nvidiaRes.json();
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(data));
           }
 
         } catch (err) {

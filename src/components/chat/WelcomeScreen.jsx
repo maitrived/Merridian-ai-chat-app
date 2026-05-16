@@ -5,7 +5,7 @@ export default function WelcomeScreen({ setIsSettingsOpen, setInput }) {
     <>
       <div className="welcome-screen">
         <h1>Ready to build?</h1>
-        <p>I'm your local AI assistant. I can help with coding, analysis, or just a chat.</p>
+        <p>I'm your AI assistant. I can help with coding, analysis, or just a chat.</p>
         
         <div className="bento-grid">
           <div className="bento-item large">

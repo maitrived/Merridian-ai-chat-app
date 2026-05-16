@@ -60,7 +60,7 @@ export default function ChatInterface({
           documents={documents}
         />
         <div style={{ marginTop: '0.4rem', fontSize: '0.6rem', color: 'var(--on-surface-variant)', opacity: 0.6, textAlign: 'center' }}>
-           Merridian Local AI may provide inaccurate information. Verify critical data.
+           Merridian AI may provide inaccurate information. Verify critical data.
         </div>
       </div>
     </div>

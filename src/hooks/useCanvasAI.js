@@ -266,10 +266,15 @@ export function useCanvasAI(
     Idea 1: "${sourceNode.data.content}"
     Idea 2: "${targetNode.data.content}"
     
-    Identify the conceptual gap between these two points. Provide 2 highly logical, substantial intermediate steps (max 20 words each) that form a clear bridge of reasoning between Idea 1 and Idea 2.
+    1. Identify the conceptual gap between these two points.
+    2. Provide a brief (1-2 sentence) explanation of this gap.
+    3. Provide 2 highly logical, substantial intermediate steps (max 20 words each) that form a clear bridge of reasoning between Idea 1 and Idea 2.
     
-    Respond ONLY with a valid JSON array of strings.
-    Example: ["Intermediate reasoning step A", "Intermediate reasoning step B"]`;
+    Respond ONLY with a valid JSON object in this format:
+    {
+      "explanation": "Brief explanation of the conceptual gap...",
+      "steps": ["Step 1...", "Step 2..."]
+    }`;
 
     try {
       const response = await fetch('/api/chat', {
@@ -290,15 +295,19 @@ export function useCanvasAI(
       const data = await response.json();
       
       let steps = [];
+      let explanation = '';
+
       try {
         let content = data.choices?.[0]?.message?.content?.trim() || '';
         content = content.replace(/^```json\n?/, '').replace(/\n?```$/, '');
-        const start = content.indexOf('[');
-        const end = content.lastIndexOf(']');
+        const start = content.indexOf('{');
+        const end = content.lastIndexOf('}');
         if (start !== -1 && end !== -1) {
-          steps = JSON.parse(content.substring(start, end + 1));
+          const parsed = JSON.parse(content.substring(start, end + 1));
+          steps = parsed.steps || [];
+          explanation = parsed.explanation || '';
         } else {
-          throw new Error("No JSON array found");
+          throw new Error("No JSON object found");
         }
       } catch (e) {
         console.error("Failed to parse bridge steps:", e);
@@ -312,6 +321,10 @@ export function useCanvasAI(
       if (!Array.isArray(steps) || steps.length === 0) {
         setCanvasEdges(eds => eds.map(e => e.id === edgeId ? { ...e, data: { ...e.data, label: originalLabel } } : e));
         return;
+      }
+
+      if (explanation) {
+        sendToChat(`**Conceptual Gap Analysis:**\n\n${explanation}`);
       }
 
       const sx = sourceNode.position.x;

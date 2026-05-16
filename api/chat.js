@@ -7,7 +7,7 @@ export default async function handler(req) {
     return new Response('Method Not Allowed', { status: 405 });
   }
 
-  const { messages, model, userId } = await req.json();
+  const { messages, model, userId, stream = true, options = {} } = await req.json();
 
   const authHeader = req.headers.get('Authorization');
   if (userId !== 'guest' && (!authHeader || !authHeader.startsWith('Bearer '))) {
@@ -44,8 +44,8 @@ export default async function handler(req) {
       body: JSON.stringify({
         model: nimModel,
         messages: messages,
-        stream: true,
-        temperature: 0.5,
+        stream: stream,
+        temperature: options.temperature || 0.5,
         top_p: 1,
         max_tokens: 1024,
       }),
@@ -56,14 +56,20 @@ export default async function handler(req) {
       return new Response(JSON.stringify(errorData), { status: response.status });
     }
 
-    // Return the stream directly to the client
-    return new Response(response.body, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
-    });
+    if (stream) {
+      return new Response(response.body, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      });
+    } else {
+      const data = await response.json();
+      return new Response(JSON.stringify(data), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
   } catch (error) {
     console.error("API Chat Error:", error.message);
     return new Response(JSON.stringify({ error: "An internal server error occurred." }), { 

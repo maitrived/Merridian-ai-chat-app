@@ -1,4 +1,4 @@
-# Merridian — Local AI Chat & Thinking Canvas
+# Merridian — AI Chat & Thinking Canvas
 
 A privacy-first AI chat application that runs entirely on your machine via [Ollama](https://ollama.com). Merridian pairs a polished chat interface with a **Thinking Canvas** — a 2D spatial reasoning workspace where you can visually map, connect, and branch ideas generated from your conversations.
 
@@ -6,7 +6,7 @@ A privacy-first AI chat application that runs entirely on your machine via [Olla
 
 ## Features
 ### 💬 Chat
-- **Local LLM inference** via Ollama (supports Llama 3, Phi-3, Mistral, and any Ollama-compatible model)
+- **NVIDIA NIM Acceleration** — high-performance AI inference via cloud-hosted models
 - **Streaming responses** with a live blinking cursor
 - **Session history** — conversations are persisted to Supabase and reload on refresh
 - **Document context** — upload `.txt`, `.md`, `.json`, `.csv`, or `.docx` files to give the AI context without copy-pasting
@@ -44,7 +44,7 @@ A privacy-first AI chat application that runs entirely on your machine via [Olla
 | Frontend | React 19, Vite |
 | Styling | Vanilla CSS |
 | Graph Engine | `@xyflow/react` (React Flow) |
-| AI Inference | Ollama (local, any model) |
+| AI Inference | NVIDIA NIM (Llama 3.1, Mistral, etc.) |
 | Database | Supabase (PostgreSQL) |
 | Document Parsing | `mammoth` (DOCX), native FileReader |
 | Icons | `lucide-react` |
@@ -57,10 +57,7 @@ A privacy-first AI chat application that runs entirely on your machine via [Olla
 ### Prerequisites
 
 1. **Node.js** (v18+)
-2. **Ollama** — [install here](https://ollama.com/download), then pull at least one model:
-   ```bash
-   ollama pull llama3
-   ```
+2. **NVIDIA API Key** — [get one here](https://build.nvidia.com/nvidia/llama-3-1-8b-instruct).
 3. **Supabase** project — [create a free project](https://supabase.com). Run the schema from [`docs/supabase_schema.sql`](docs/supabase_schema.sql) in the Supabase SQL editor.
 
 ### Installation
@@ -86,9 +83,6 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here
 ### Running Locally
 
 ```bash
-# Start Ollama (if not already running as a system service)
-ollama serve
-
 # Start the dev server
 npm run dev
 ```
@@ -146,5 +140,5 @@ ai-chat-app/
 
 ## Notes
 
-- All AI inference runs **100% locally** — no data is sent to any cloud AI provider.
+- AI inference is powered by NVIDIA NIM serverless functions.
 - For production use, enable Supabase Row-Level Security with proper auth policies.
