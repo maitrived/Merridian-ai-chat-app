@@ -2,6 +2,7 @@ import React from 'react';
 import { FileText, Download, X } from 'lucide-react';
 
 export default function DocumentPanel({
+  width,
   documentTitle,
   setDocumentTitle,
   documentContent,
@@ -10,7 +11,7 @@ export default function DocumentPanel({
   handleToggleDocument
 }) {
   return (
-    <aside className="document-panel">
+    <aside className="document-panel" style={{ width: `${width}px` }}>
       <div className="document-header">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
           <FileText size={16} color="var(--primary)" />

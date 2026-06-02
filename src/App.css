@@ -124,6 +124,30 @@
   position: relative;
 }
 
+.resize-handle {
+  width: 4px;
+  background: transparent;
+  cursor: col-resize;
+  transition: background 0.2s ease;
+  z-index: 100;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.resize-handle:hover, .resize-handle:active {
+  background: var(--primary-container);
+  opacity: 0.5;
+}
+
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  right: -4px;
+}
+
 /* Main Content Area */
 .main-content {
   flex: 1;
@@ -626,4 +650,46 @@ textarea.chat-input-area {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Queries */
+@media (max-width: 1024px) {
+  .document-panel, .canvas-panel {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    z-index: 150;
+    width: 80% !important;
+  }
+  .resize-handle { display: none; }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    z-index: 200;
+    box-shadow: 20px 0 40px rgba(0,0,0,0.1);
+  }
+  
+  .chat-container {
+    padding: 1rem 1rem 120px 1rem;
+  }
+
+  .input-box {
+    max-width: 100%;
+  }
+
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .document-panel, .canvas-panel {
+    width: 100% !important;
+  }
 }

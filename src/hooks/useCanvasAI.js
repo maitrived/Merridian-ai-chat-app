@@ -329,18 +329,20 @@ export function useCanvasAI(
 
       const sx = sourceNode.position.x;
       const sy = sourceNode.position.y;
-      const tx = targetNode.position.x;
-      const ty = targetNode.position.y;
+      
+      // Move target node to a new diagonal position to make space
+      const newTx = sx + 500;
+      const newTy = sy + 350;
 
-      const newNodes = steps.map((step, i) => {
+      const bridgeNodes = steps.map((step, i) => {
         const ratio = (i + 1) / (steps.length + 1);
         const nid = `node-bridge-${Date.now()}-${i}`;
         return {
           id: nid,
           type: 'textNode',
           position: {
-            x: sx + (tx - sx) * ratio,
-            y: sy + (ty - sy) * ratio,
+            x: sx + (newTx - sx) * ratio,
+            y: sy + (newTy - sy) * ratio,
           },
           data: { 
             id: nid,
@@ -353,30 +355,38 @@ export function useCanvasAI(
 
       const newEdges = [];
       newEdges.push({
-        id: `edge-${sourceNode.id}-${newNodes[0].id}`,
+        id: `edge-${sourceNode.id}-${bridgeNodes[0].id}`,
         source: sourceNode.id,
-        target: newNodes[0].id,
+        target: bridgeNodes[0].id,
         type: 'labeled',
         animated: true,
       });
-      for (let i = 0; i < newNodes.length - 1; i++) {
+      for (let i = 0; i < bridgeNodes.length - 1; i++) {
         newEdges.push({
-          id: `edge-${newNodes[i].id}-${newNodes[i+1].id}`,
-          source: newNodes[i].id,
-          target: newNodes[i+1].id,
+          id: `edge-${bridgeNodes[i].id}-${bridgeNodes[i+1].id}`,
+          source: bridgeNodes[i].id,
+          target: bridgeNodes[i+1].id,
           type: 'labeled',
           animated: true,
         });
       }
       newEdges.push({
-        id: `edge-${newNodes[newNodes.length-1].id}-${targetNode.id}`,
-        source: newNodes[newNodes.length-1].id,
+        id: `edge-${bridgeNodes[bridgeNodes.length-1].id}-${targetNode.id}`,
+        source: bridgeNodes[bridgeNodes.length-1].id,
         target: targetNode.id,
         type: 'labeled',
         animated: true,
       });
 
-      setCanvasNodes((prev) => [...prev, ...newNodes]);
+      setCanvasNodes((prev) => {
+        const otherNodes = prev.filter(n => n.id !== targetNode.id);
+        const updatedTargetNode = {
+          ...targetNode,
+          position: { x: newTx, y: newTy }
+        };
+        return [...otherNodes, updatedTargetNode, ...bridgeNodes];
+      });
+
       setCanvasEdges((prev) => [
         ...prev.filter((e) => e.id !== edgeId),
         ...newEdges,

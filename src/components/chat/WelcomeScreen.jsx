@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function WelcomeScreen({ setIsSettingsOpen, setInput }) {
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+
   return (
     <>
       <div className="welcome-screen">
@@ -17,18 +19,35 @@ export default function WelcomeScreen({ setIsSettingsOpen, setInput }) {
           </div>
           <div className="bento-item medium">
             <h3 style={{ fontSize: '0.8rem', marginBottom: '0.15rem' }}>Docs Context</h3>
-            <p style={{ fontSize: '0.7rem', opacity: 0.8 }}>Attach documents to give me context for our conversation.</p>
+            <p style={{ fontSize: '0.7rem', opacity: 0.8 }}>Attach documents to give the AI instant context for your conversation.</p>
           </div>
           <div className="bento-item" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsSettingsOpen(true)}>
             <div style={{ fontSize: '0.95rem', marginBottom: '4px' }}>🛠️</div>
             <span style={{ fontSize: '0.65rem', fontWeight: 600 }}>Settings</span>
           </div>
-          <div className="bento-item" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} onClick={() => alert("Privacy & Security\n\nYour chats and canvases are encrypted and protected by Row Level Security in Supabase. Only you can access your data.")}>
+          <div className="bento-item" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} onClick={() => setIsPrivacyOpen(true)}>
             <div style={{ fontSize: '0.95rem', marginBottom: '4px' }}>🔒</div>
             <span style={{ fontSize: '0.65rem', fontWeight: 600 }}>Privacy</span>
           </div>
         </div>
       </div>
+
+      {isPrivacyOpen && (
+        <div className="custom-modal-overlay" onClick={() => setIsPrivacyOpen(false)}>
+          <div className="custom-modal-card" onClick={e => e.stopPropagation()}>
+            <div className="custom-modal-header">
+              <div className="custom-modal-icon">🔒</div>
+              <h2>Privacy & Security</h2>
+            </div>
+            <div className="custom-modal-content">
+              <p>Your chats and canvases are encrypted and protected by Row Level Security in Supabase. Only you can access your data.</p>
+            </div>
+            <button className="custom-modal-btn" onClick={() => setIsPrivacyOpen(false)}>
+              Got it!
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

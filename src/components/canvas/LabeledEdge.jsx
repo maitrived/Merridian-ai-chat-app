@@ -162,7 +162,7 @@ function LabeledEdge({
             )}
           </div>
 
-          {/* 4.1 Fill the Gap Button */}
+          {/* 4.1 Fill the Gap Button - Show only when selected and empty */}
           {selected && !isEditing && !hasLabel && data.label !== '✨ Thinking...' && (
             <button 
               className="fill-gap-btn nodrag nopan"

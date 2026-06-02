@@ -1,14 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import { storage } from '../lib/storage';
 
-export function useChat(session) {
+export function useChat(session, isGuest) {
   const [messages, setMessages] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
 
   useEffect(() => {
-    if (!session) return;
+    if (!session && !isGuest) return;
     async function fetchSessions() {
       try {
         const sessionData = await storage.getSessions(session);

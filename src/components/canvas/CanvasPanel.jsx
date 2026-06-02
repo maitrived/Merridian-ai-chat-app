@@ -9,7 +9,7 @@ import {
   MarkerType,
   ReactFlowProvider,
 } from '@xyflow/react';
-import { Sparkles, Minimize2, Undo2, Redo2, Download } from 'lucide-react';
+import { Sparkles, Minimize2, Undo2, Redo2, Download, X, Trash2 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import '@xyflow/react/dist/style.css';
 import TextNode from './TextNode';
@@ -100,6 +100,8 @@ function CanvasFlow({ nodes, edges, onNodesChange, onEdgesChange, setEdges, save
           background: 'var(--surface-container-low)',
           border: '1px solid var(--outline-variant)',
           borderRadius: '12px',
+          width: 100,
+          height: 80
         }}
         nodeColor={(n) => {
           const colors = { response: '#5b8dee', prompt: '#9b6dff', idea: '#f5a623' };
@@ -123,7 +125,7 @@ function CanvasFlow({ nodes, edges, onNodesChange, onEdgesChange, setEdges, save
   );
 }
 
-function CanvasPanel({ nodes, edges, onNodesChange, onEdgesChange, setEdges, fillGap, sendToChat, summarizeSelection, collapseCluster, addIdeaNode, branchOpposite, fanOut, undo, redo, canUndo, canRedo, saveHistory }) {
+function CanvasPanel({ width, handleToggleCanvas, nodes, edges, onNodesChange, onEdgesChange, setEdges, fillGap, sendToChat, summarizeSelection, collapseCluster, addIdeaNode, branchOpposite, fanOut, undo, redo, canUndo, canRedo, saveHistory, clearCanvas }) {
   const selectedNodes = useMemo(() => nodes.filter(n => n.selected), [nodes]);
   const selectedCount = selectedNodes.length;
 
@@ -173,7 +175,7 @@ function CanvasPanel({ nodes, edges, onNodesChange, onEdgesChange, setEdges, fil
   };
 
   return (
-    <aside className="canvas-panel">
+    <aside className="canvas-panel" style={{ width: `${width}px` }}>
       <div className="canvas-panel-header">
         <div className="canvas-panel-title">
           <span className="canvas-icon">🧠</span>
@@ -212,6 +214,13 @@ function CanvasPanel({ nodes, edges, onNodesChange, onEdgesChange, setEdges, fil
           )}
           <button className="canvas-action-pill" onClick={onExportClick} style={{ background: 'var(--surface-container-high)', color: 'var(--on-surface)', marginLeft: '4px' }} title="Export as PNG">
             <Download size={12} />
+          </button>
+          <button className="canvas-action-pill" onClick={clearCanvas} style={{ background: 'var(--surface-container-high)', color: '#ba1a1a', marginLeft: '4px' }} title="Clear Canvas">
+            <Trash2 size={12} />
+          </button>
+          <div style={{ width: '1px', height: '16px', background: 'var(--outline-variant)', marginLeft: '8px', marginRight: '4px' }} />
+          <button className="icon-btn" onClick={handleToggleCanvas} title="Close Canvas">
+            <X size={14} />
           </button>
         </div>
       </div>

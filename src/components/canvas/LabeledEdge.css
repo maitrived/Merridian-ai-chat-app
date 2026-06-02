@@ -9,6 +9,7 @@
   justify-content: center;
   gap: 4px;
   transition: transform 0.15s ease;
+  z-index: 9999; /* Massive z-index to stay on top */
 }
 
 .edge-label-container {
@@ -95,7 +96,7 @@
 .edge-label-wrapper.no-label .edge-label-text {
   padding: 2px 7px;
   border-style: dashed;
-  opacity: 0;    /* hidden until edge is hovered/selected */
+  opacity: 1;    /* always show the + */
   transition: opacity 0.2s ease, border-color 0.2s ease;
 }
 

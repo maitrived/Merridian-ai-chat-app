@@ -60,6 +60,9 @@ export default function Sidebar({
 
         <div className="history-list" style={{ marginTop: '1rem' }}>
           <div style={{ padding: '0 0.5rem', marginBottom: '0.5rem', fontSize: '0.65rem', fontWeight: 600, color: 'var(--on-surface-variant)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Documents</div>
+          <div style={{ padding: '0 0.5rem', marginBottom: '0.75rem', fontSize: '0.7rem', color: 'var(--on-surface-variant)', opacity: 0.9, lineHeight: 1.4 }}>
+            Attach documents and use <strong style={{ color: 'var(--primary)', background: 'var(--surface-container-high)', padding: '0 4px', borderRadius: '4px' }}>@</strong> in the chat to tag them for instant context.
+          </div>
           {documents.length === 0 && (
             <div style={{ padding: '0 0.5rem', fontSize: '0.7rem', color: 'var(--on-surface-variant)', opacity: 0.8, fontStyle: 'italic', lineHeight: 1.4 }}>
               No documents added.<br/>Click the 📎 icon in the chat to upload documents to use as reference.

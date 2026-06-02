@@ -2,14 +2,14 @@ import { useState, useCallback, useEffect } from 'react';
 import mammoth from 'mammoth';
 import { storage } from '../lib/storage';
 
-export function useDocuments(session) {
+export function useDocuments(session, isGuest) {
   const [documents, setDocuments] = useState([]);
   const [documentTitle, setDocumentTitle] = useState('');
   const [documentContent, setDocumentContent] = useState('');
 
   // Fetch initial docs
   useEffect(() => {
-    if (!session) return;
+    if (!session && !isGuest) return;
     async function fetchDocs() {
       try {
         const docsData = await storage.getDocuments(session);
