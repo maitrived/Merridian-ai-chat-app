@@ -30,6 +30,10 @@ export default function WelcomeScreen({ setIsSettingsOpen, setInput }) {
             <span style={{ fontSize: '0.65rem', fontWeight: 600 }}>Privacy</span>
           </div>
         </div>
+
+        <p style={{ marginTop: '1.25rem', fontSize: '0.78rem', color: 'var(--on-surface-variant)', opacity: 0.85, letterSpacing: '0.02em' }}>
+          A project by Maitri Ved
+        </p>
       </div>
 
       {isPrivacyOpen && (
