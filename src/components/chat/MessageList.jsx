@@ -20,8 +20,9 @@ export default function MessageList({ messages, isGenerating, sendToCanvas, hand
                 </div>
               ) : msg.role === 'assistant' ? (
                 <div className="markdown-body">
-                  <ReactMarkdown>{msg.content}</ReactMarkdown>
-                  {(isGenerating && idx === messages.length - 1) && <span className="blinking-cursor" />}
+                  <ReactMarkdown>
+                    {msg.content + (isGenerating && idx === messages.length - 1 ? ' ▍' : '')}
+                  </ReactMarkdown>
                 </div>
               ) : (
                 <div className="system-context-note">

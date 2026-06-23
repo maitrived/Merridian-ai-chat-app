@@ -12,7 +12,18 @@ export function useChat(session, isGuest) {
     async function fetchSessions() {
       try {
         const sessionData = await storage.getSessions(session);
-        if (sessionData) setSessions(sessionData);
+        if (sessionData) {
+          setSessions(sessionData);
+          // Restore the last active session after a page reload
+          const savedId = localStorage.getItem('merridian_active_session_id');
+          if (savedId) {
+            const found = sessionData.find(s => s.id === savedId);
+            if (found) {
+              setMessages(found.messages);
+              setCurrentSessionId(found.id);
+            }
+          }
+        }
       } catch (err) {
         console.error("Storage Error fetching sessions:", err);
       }
@@ -29,6 +40,7 @@ export function useChat(session, isGuest) {
   const createNewChat = useCallback(() => {
     setMessages([]);
     setCurrentSessionId(null);
+    localStorage.removeItem('merridian_active_session_id');
   }, []);
 
   const loadSession = useCallback((id) => {
@@ -36,6 +48,7 @@ export function useChat(session, isGuest) {
     if (s) {
       setMessages(s.messages);
       setCurrentSessionId(id);
+      localStorage.setItem('merridian_active_session_id', id);
     }
   }, [sessions]);
 
@@ -56,6 +69,7 @@ export function useChat(session, isGuest) {
     setMessages(prev => [...prev, { role: 'assistant', content: '' }]);
 
     let fullAssistantMessage = '';
+    let success = false;
 
     try {
       let apiMessages = apiMsgList.map(m => ({ role: m.role, content: m.content }));
@@ -151,6 +165,9 @@ export function useChat(session, isGuest) {
 
       if (sessionId && fullAssistantMessage) {
         await storage.saveMessage(session, sessionId, 'assistant', fullAssistantMessage);
+        success = true;
+      } else if (fullAssistantMessage) {
+        success = true;
       }
     } catch (apiError) {
       console.error("API Error:", apiError);
@@ -166,6 +183,7 @@ export function useChat(session, isGuest) {
     } finally {
       setIsGenerating(false);
     }
+    return success;
   }, [session]);
 
   const handleSend = useCallback(async (userText, documents, isDocumentOpen, documentContent, documentTitle) => {
@@ -175,6 +193,7 @@ export function useChat(session, isGuest) {
     }
 
     let sessionId = currentSessionId;
+    let isNewSession = false;
     
     try {
       if (!sessionId) {
@@ -182,22 +201,31 @@ export function useChat(session, isGuest) {
         const newSess = await storage.createSession(session, title);
         if (newSess) {
           sessionId = newSess.id;
+          isNewSession = true;
           setCurrentSessionId(sessionId);
+          localStorage.setItem('merridian_active_session_id', sessionId);
           setSessions(prev => [{ ...newSess, messages: [] }, ...prev]);
         }
       }
 
       const hasDoc = isDocumentOpen && documentContent;
-      const displayUserText = hasDoc ? `${userText}\n\n*[📄 Attached Document: ${documentTitle || 'Untitled'}]*` : userText;
-
-      if (sessionId) {
-        await storage.saveMessage(session, sessionId, 'user', displayUserText);
-      }
+      const displayUserText = hasDoc ? `${userText}\n\n*[📄 Document "${documentTitle || 'Untitled'}" has been loaded into your system context]*` : userText;
       
       const newMessages = [...messages, { role: 'user', content: displayUserText }];
       setMessages(newMessages);
       
-      await fetchAiResponse(newMessages, sessionId, documents, isDocumentOpen, documentContent, documentTitle);
+      const success = await fetchAiResponse(newMessages, sessionId, documents, isDocumentOpen, documentContent, documentTitle);
+
+      // Only persist to storage if the AI responded successfully
+      if (success && sessionId) {
+        await storage.saveMessage(session, sessionId, 'user', displayUserText);
+      } else if (!success && isNewSession && sessionId) {
+        // Roll back the newly created empty session so it doesn't clutter the sidebar
+        await storage.deleteSession(session, sessionId);
+        setSessions(prev => prev.filter(s => s.id !== sessionId));
+        setCurrentSessionId(null);
+        localStorage.removeItem('merridian_active_session_id');
+      }
       
     } catch (dbError) {
       console.error("Database/Storage error:", dbError);
