@@ -1,0 +1,412 @@
+/* ============================================================
+   Auth.css — Standalone auth module styles
+   Covers: sign-in, sign-up, forgot-password screens + modals
+   Depends on: Inter font (add to your index.html or global CSS)
+   ============================================================ */
+
+/* --- Google Font import (safe to remove if already in your project) --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- Design tokens (scoped; won't conflict with your project's :root) --- */
+.auth-module-root {
+  --am-primary: #005cba;
+  --am-primary-container: #0066cc;
+  --am-on-primary: #ffffff;
+  --am-surface: #fcf8fb;
+  --am-surface-lowest: #ffffff;
+  --am-surface-low: #f6f3f5;
+  --am-on-surface: #1b1b1d;
+  --am-on-surface-variant: #414753;
+  --am-outline: #727784;
+  --am-outline-variant: #c1c6d5;
+  --am-radius-sm: 8px;
+  --am-radius-md: 12px;
+  --am-radius-lg: 24px;
+  --am-radius-full: 9999px;
+}
+
+/* ========================
+   OVERLAY / FULL-PAGE WRAP
+   ======================== */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: background 0.6s cubic-bezier(0.16, 1, 0.3, 1), backdrop-filter 0.3s ease;
+}
+
+/* Differentiated backgrounds per mode */
+.signin-mode {
+  background: radial-gradient(circle at top left, #f3f6fa 0%, #d8e5f5 50%, #c5daf2 100%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.signup-mode {
+  background: radial-gradient(circle at bottom right, #0d0a1c 0%, #15102a 50%, #06040d 100%);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ========================
+   BASE CARD
+   ======================== */
+.auth-card {
+  width: 100%;
+  max-width: 360px;
+  padding: 2.25rem 2rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+  animation: authSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #1d1d1f;
+}
+
+/* Sign-in card: light glass */
+.signin-mode .auth-card {
+  max-width: 350px;
+  padding: 2rem 1.75rem;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 92, 186, 0.15);
+  box-shadow: 0 24px 64px rgba(0, 92, 186, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+  color: #1d1d1f;
+}
+
+/* Sign-up card: dark futuristic glass */
+.signup-mode .auth-card {
+  max-width: 420px;
+  padding: 2.75rem 2.25rem;
+  background: rgba(18, 14, 36, 0.75);
+  backdrop-filter: blur(35px);
+  -webkit-backdrop-filter: blur(35px);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45), 0 0 50px rgba(139, 92, 246, 0.14);
+  color: #ffffff;
+}
+
+@keyframes authSlideUp {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ========================
+   HEADER
+   ======================== */
+.signin-mode .auth-header { text-align: center; margin-bottom: 1.5rem; }
+.signup-mode .auth-header { text-align: center; margin-bottom: 2rem; }
+
+.auth-header h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease;
+}
+
+.signin-mode .auth-header h1 { color: #1d1d1f; }
+.signup-mode .auth-header h1 { color: #ffffff; text-shadow: 0 0 12px rgba(255,255,255,0.1); }
+
+.auth-header p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.signin-mode .auth-header p { color: #414753; }
+.signup-mode .auth-header p { color: rgba(255, 255, 255, 0.7); }
+
+/* ========================
+   LOGO ICON
+   ======================== */
+.auth-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.signin-mode .auth-logo {
+  background: #0066cc;
+  box-shadow: 0 4px 12px rgba(0, 92, 186, 0.25);
+}
+
+.signup-mode .auth-logo {
+  background: #8b5cf6;
+  transform: rotate(5deg);
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+}
+
+/* ========================
+   FORM & INPUTS
+   ======================== */
+.signin-mode .auth-form { display: flex; flex-direction: column; gap: 0.9rem; }
+.signup-mode .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.input-group label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 550;
+  transition: color 0.3s ease;
+}
+
+.signin-mode .input-group label { color: #414753; }
+.signup-mode .input-group label { color: rgba(255, 255, 255, 0.8); }
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.signin-mode .input-icon { color: #414753; }
+.signup-mode .input-icon { color: rgba(255, 255, 255, 0.55); }
+
+.input-wrapper input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.8rem;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light inputs (sign-in) */
+.signin-mode input {
+  background: #f5f5f7;
+  border: 1px solid transparent;
+  color: #1d1d1f;
+}
+.signin-mode input::placeholder { color: #727784; }
+.signin-mode input:focus {
+  outline: none;
+  border-color: #005cba;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 92, 186, 0.12);
+}
+
+/* Dark inputs (sign-up) */
+.signup-mode input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.signup-mode input::placeholder { color: rgba(255, 255, 255, 0.4); }
+.signup-mode input:focus {
+  outline: none;
+  border-color: #a78bfa;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+}
+
+/* ========================
+   SUBMIT BUTTON
+   ======================== */
+.auth-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 0.5rem;
+  color: white;
+}
+
+.signin-mode .auth-submit {
+  background: #005cba;
+  box-shadow: 0 4px 14px rgba(0, 92, 186, 0.25);
+}
+.signin-mode .auth-submit:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+.signup-mode .auth-submit {
+  background: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+}
+.signup-mode .auth-submit:hover {
+  background: #7c3aed;
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.auth-submit:active  { transform: translateY(0) scale(0.98); }
+.auth-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* ========================
+   ERROR PANEL
+   ======================== */
+.auth-error {
+  border: 1px solid rgba(186, 26, 26, 0.25);
+  padding: 0.75rem;
+  border-radius: 12px;
+  font-size: 0.82rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+.signin-mode .auth-error { background: rgba(186, 26, 26, 0.08); color: #ba1a1a; }
+.signup-mode .auth-error { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border-color: rgba(239,68,68,0.3); }
+
+/* ========================
+   FOOTER / NAV LINKS
+   ======================== */
+.signin-mode .auth-footer { margin-top: 1rem;   display: flex; flex-direction: column; gap: 0.6rem;  text-align: center; }
+.signup-mode .auth-footer { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; text-align: center; }
+
+.text-btn {
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+.signin-mode .text-btn        { color: #005cba; }
+.signin-mode .text-btn:hover  { background: rgba(0, 92, 186, 0.06); }
+.signup-mode .text-btn        { color: #c084fc; }
+.signup-mode .text-btn:hover  { background: rgba(139, 92, 246, 0.12); }
+
+/* Guest button overrides */
+.signin-mode .guest-btn       { color: #414753; }
+.signin-mode .guest-btn:hover { background: #f5f5f7; }
+.signup-mode .guest-btn       { color: rgba(255,255,255,0.65); }
+.signup-mode .guest-btn:hover { background: rgba(255,255,255,0.06); }
+
+/* ========================
+   MODAL SYSTEM
+   (used for success & confirm dialogs)
+   ======================== */
+.am-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1.5rem;
+  animation: amModalFadeIn 0.25s ease-out;
+}
+
+.am-modal-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid #c1c6d5;
+  border-radius: 24px;
+  padding: 2.25rem 2rem;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: amModalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.am-modal-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.am-modal-icon {
+  width: 52px;
+  height: 52px;
+  background: rgba(0, 92, 186, 0.1);
+  color: #005cba;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.am-modal-header h2 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1b1b1d;
+  letter-spacing: -0.02em;
+}
+
+.am-modal-content {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: #414753;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.am-modal-btn {
+  background: #005cba;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 2rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+  box-shadow: 0 4px 14px rgba(0, 92, 186, 0.25);
+}
+.am-modal-btn:hover  { transform: translateY(-1.5px); filter: brightness(1.08); }
+.am-modal-btn:active { transform: translateY(0); }
+
+@keyframes amModalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes amModalSlideUp {
+  from { transform: translateY(24px) scale(0.96); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}

@@ -1,6 +1,6 @@
 # Merridian — AI Chat & Thinking Canvas
 
-A privacy-first AI chat application that runs entirely on your machine via [Ollama](https://ollama.com). Merridian pairs a polished chat interface with a **Thinking Canvas** — a 2D spatial reasoning workspace where you can visually map, connect, and branch ideas generated from your conversations.
+A privacy-first AI chat application powered by cloud-hosted **NVIDIA NIM** models and **Vercel Edge Functions**. Merridian pairs a polished chat interface with a **Thinking Canvas** — a 2D spatial reasoning workspace where you can visually map, connect, and branch ideas generated from your conversations.
 
 ---
 
@@ -43,8 +43,9 @@ A privacy-first AI chat application that runs entirely on your machine via [Olla
 |---|---|
 | Frontend | React 19, Vite |
 | Styling | Vanilla CSS |
+| Backend | Vercel Edge Functions (`api/chat.js`) |
 | Graph Engine | `@xyflow/react` (React Flow) |
-| AI Inference | NVIDIA NIM (Llama 3.1, Mistral, etc.) |
+| AI Inference | NVIDIA NIM (Llama 3.1 8B/70B, Mistral Large) |
 | Database | Supabase (PostgreSQL) |
 | Document Parsing | `mammoth` (DOCX), native FileReader |
 | Icons | `lucide-react` |
@@ -78,6 +79,7 @@ npm install
 ```env
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key-here
+NVIDIA_API_KEY=your-nvidia-nim-api-key-here
 ```
 
 ### Running Locally
@@ -140,5 +142,5 @@ ai-chat-app/
 
 ## Notes
 
-- AI inference is powered by NVIDIA NIM serverless functions.
-- For production use, enable Supabase Row-Level Security with proper auth policies.
+- AI inference is powered by NVIDIA NIM serverless APIs routed securely through a Vercel Edge Function (`api/chat.js`) in production, and a local Vite proxy (`vite.config.js`) during development.
+- For production use, ensure Supabase Row-Level Security is enabled as per the SQL schema provided.

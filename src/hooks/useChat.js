@@ -163,10 +163,7 @@ export function useChat(session, isGuest) {
         }
       }
 
-      if (sessionId && fullAssistantMessage) {
-        await storage.saveMessage(session, sessionId, 'assistant', fullAssistantMessage);
-        success = true;
-      } else if (fullAssistantMessage) {
+      if (fullAssistantMessage) {
         success = true;
       }
     } catch (apiError) {
@@ -183,7 +180,7 @@ export function useChat(session, isGuest) {
     } finally {
       setIsGenerating(false);
     }
-    return success;
+    return { success, assistantMessage: fullAssistantMessage };
   }, [session]);
 
   const handleSend = useCallback(async (userText, documents, isDocumentOpen, documentContent, documentTitle) => {
@@ -214,11 +211,12 @@ export function useChat(session, isGuest) {
       const newMessages = [...messages, { role: 'user', content: displayUserText }];
       setMessages(newMessages);
       
-      const success = await fetchAiResponse(newMessages, sessionId, documents, isDocumentOpen, documentContent, documentTitle);
+      const { success, assistantMessage } = await fetchAiResponse(newMessages, sessionId, documents, isDocumentOpen, documentContent, documentTitle);
 
       // Only persist to storage if the AI responded successfully
       if (success && sessionId) {
         await storage.saveMessage(session, sessionId, 'user', displayUserText);
+        await storage.saveMessage(session, sessionId, 'assistant', assistantMessage);
       } else if (!success && isNewSession && sessionId) {
         // Roll back the newly created empty session so it doesn't clutter the sidebar
         await storage.deleteSession(session, sessionId);
@@ -241,8 +239,11 @@ export function useChat(session, isGuest) {
     const msgList = messages.slice(0, index);
     setMessages(msgList);
     
-    await fetchAiResponse(msgList, currentSessionId, documents, isDocumentOpen, documentContent, documentTitle);
-  }, [isGenerating, messages, currentSessionId, fetchAiResponse]);
+    const { success, assistantMessage } = await fetchAiResponse(msgList, currentSessionId, documents, isDocumentOpen, documentContent, documentTitle);
+    if (success && currentSessionId) {
+      await storage.saveMessage(session, currentSessionId, 'assistant', assistantMessage);
+    }
+  }, [isGenerating, messages, currentSessionId, fetchAiResponse, session]);
 
   return {
     messages,
