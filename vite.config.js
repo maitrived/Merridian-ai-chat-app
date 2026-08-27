@@ -49,11 +49,11 @@ CRITICAL: Do not assume genders. Always use gender-neutral language (they/them/t
           }
           
           const modelMap = {
-            'gemini-1.5-flash': 'meta/llama-3.1-8b-instruct',
-            'gemini-1.5-pro': 'meta/llama-3.1-70b-instruct',
-            'gpt-4o': 'mistralai/mistral-large-2407',
+            'gemini-1.5-flash': 'deepseek-ai/deepseek-v4-pro-0813',
+            'gemini-1.5-pro': 'deepseek-ai/deepseek-v4-pro-0813',
+            'gpt-4o': 'deepseek-ai/deepseek-v4-pro-0813',
           };
-          const nimModel = modelMap[model] || 'meta/llama-3.1-8b-instruct';
+          const nimModel = modelMap[model] || 'deepseek-ai/deepseek-v4-pro-0813';
 
           const nvidiaRes = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
             method: 'POST',

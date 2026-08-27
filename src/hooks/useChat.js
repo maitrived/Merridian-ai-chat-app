@@ -152,7 +152,7 @@ export function useChat(session, isGuest) {
                 const lastIdx = msgs.length - 1;
                 msgs[lastIdx] = { 
                    ...msgs[lastIdx], 
-                   content: msgs[lastIdx].content + chunk 
+                   content: fullAssistantMessage 
                 };
                 return msgs;
               });

@@ -10,7 +10,7 @@ A privacy-first AI chat application powered by cloud-hosted **NVIDIA NIM** model
 - **Streaming responses** with a live blinking cursor
 - **Session history** — conversations are persisted to Supabase and reload on refresh
 - **Document context** — upload `.txt`, `.md`, `.json`, `.csv`, or `.docx` files to give the AI context without copy-pasting
-- **Markdown rendering** for AI responses
+- **Markdown rendering** for AI responses (powered by `react-markdown`)
 
 ### 🧠 Thinking Canvas
 - **Infinite 2D canvas** powered by React Flow — pan, zoom, and drag nodes freely
@@ -28,8 +28,14 @@ A privacy-first AI chat application powered by cloud-hosted **NVIDIA NIM** model
 - **Collapse Cluster** — merge multiple selected nodes into a single AI-synthesized summary node
 - **Summarize & Send** — summarize a selected cluster and inject the result back into the chat
 
+### 🔐 Authentication
+- **Secure Sign In & Sign Up** pages featuring modern glassmorphism design
+- **Forgot Password** flow with email verification
+- **Guest Mode** — continue as a guest without creating an account
+- **Supabase Auth** — handles session persistence securely
+
 ### ⚙️ Persistence & Polish
-- **Supabase backend** — chat sessions, messages, and canvas state all sync to PostgreSQL
+- **Supabase backend** — user auth, chat sessions, messages, and canvas state all sync to PostgreSQL
 - **Undo / Redo** — full history stack (`Ctrl+Z` / `Ctrl+Shift+Z`)
 - **Export to PNG** — download the canvas as a high-resolution image
 - **Right-click context menus** on nodes and edges
@@ -46,10 +52,11 @@ A privacy-first AI chat application powered by cloud-hosted **NVIDIA NIM** model
 | Backend | Vercel Edge Functions (`api/chat.js`) |
 | Graph Engine | `@xyflow/react` (React Flow) |
 | AI Inference | NVIDIA NIM (Llama 3.1 8B/70B, Mistral Large) |
-| Database | Supabase (PostgreSQL) |
+| Database & Auth | Supabase (PostgreSQL, Supabase Auth) |
 | Document Parsing | `mammoth` (DOCX), native FileReader |
 | Icons | `lucide-react` |
 | Canvas Export | `html-to-image` |
+| Markdown | `react-markdown` |
 
 ---
 
@@ -120,6 +127,8 @@ ai-chat-app/
 │   ├── App.css                     # Main stylesheet
 │   ├── index.css                   # Global CSS variables & resets
 │   └── main.jsx                    # App entry point
+├── auth-module/                    # Drop-in Authentication module (source)
+├── api/                            # Vercel Serverless Functions
 ├── docs/                           # Internal documentation and guides
 ├── .env                            # Environment variables (not committed)
 ├── index.html

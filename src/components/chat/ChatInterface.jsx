@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useLayoutEffect } from 'react';
 import WelcomeScreen from './WelcomeScreen';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
@@ -17,10 +17,10 @@ export default function ChatInterface({
   const chatEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    chatEndRef.current?.scrollIntoView({ behavior: 'auto' });
   };
   
-  useEffect(() => {
+  useLayoutEffect(() => {
     scrollToBottom();
   }, [messages]);
 
