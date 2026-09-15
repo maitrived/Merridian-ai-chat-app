@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
 
-dotenv.config()
+dotenv.config({ override: true })
 
 const apiProxyPlugin = () => ({
   name: 'api-proxy',
@@ -49,31 +49,34 @@ CRITICAL: Do not assume genders. Always use gender-neutral language (they/them/t
           }
           
           const modelMap = {
-            'gemini-1.5-flash': 'deepseek-ai/deepseek-v4-pro-0813',
-            'gemini-1.5-pro': 'deepseek-ai/deepseek-v4-pro-0813',
-            'gpt-4o': 'deepseek-ai/deepseek-v4-pro-0813',
+            'gemini-1.5-flash': 'gemini-3.6-flash',
+            'gemini-1.5-pro': 'gemini-3.6-flash',
+            'gpt-4o': 'gemini-3.6-flash',
           };
-          const nimModel = modelMap[model] || 'deepseek-ai/deepseek-v4-pro-0813';
+          const geminiModel = modelMap[model] || 'gemini-3.6-flash';
 
-          const nvidiaRes = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+          const apiKey = process.env.GEMINI_API_KEY;
+          console.log('[Merridian] GEMINI_API_KEY loaded:', apiKey ? `${apiKey.substring(0,8)}...` : 'MISSING!');
+          console.log('[Merridian] Using model:', geminiModel);
+
+          const nvidiaRes = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.NVIDIA_API_KEY}`,
+              'Authorization': `Bearer ${apiKey}`,
             },
             body: JSON.stringify({
-              model: nimModel,
+              model: geminiModel,
               messages: finalMessages,
               stream: stream,
               temperature: options.temperature || 0.5,
-              top_p: 1,
               max_tokens: 1024,
             }),
           });
 
           if (!nvidiaRes.ok) {
             const errText = await nvidiaRes.text();
-            console.error("NVIDIA API ERROR:", nvidiaRes.status, errText);
+            console.error('[Merridian] Gemini API ERROR:', nvidiaRes.status, errText);
             res.statusCode = nvidiaRes.status;
             res.end(errText);
             return;

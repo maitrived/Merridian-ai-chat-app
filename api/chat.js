@@ -51,36 +51,35 @@ export default async function handler(req) {
     });
   }
 
-  const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
-  if (!NVIDIA_API_KEY) {
-    return new Response(JSON.stringify({ error: 'NVIDIA API Key not configured' }), { 
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) {
+    return new Response(JSON.stringify({ error: 'Gemini API Key not configured' }), { 
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 
-  // Map our model names to NVIDIA NIM model names
+  // Map our model names to Gemini model names
   const modelMap = {
-    'gemini-1.5-flash': 'deepseek-ai/deepseek-v4-pro-0813',
-    'gemini-1.5-pro': 'deepseek-ai/deepseek-v4-pro-0813',
-    'gpt-4o': 'deepseek-ai/deepseek-v4-pro-0813',
+    'gemini-1.5-flash': 'gemini-3.6-flash',
+    'gemini-1.5-pro': 'gemini-3.6-flash',
+    'gpt-4o': 'gemini-3.6-flash',
   };
 
-  const nimModel = modelMap[model] || 'deepseek-ai/deepseek-v4-pro-0813';
+  const geminiModel = modelMap[model] || 'gemini-3.6-flash';
 
   try {
-    const response = await fetch('https://integrate.api.nvidia.com/v1/chat/completions', {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${NVIDIA_API_KEY}`,
+        'Authorization': `Bearer ${GEMINI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: nimModel,
+        model: geminiModel,
         messages: prepareMessages(messages),
         stream: stream,
         temperature: options.temperature || 0.5,
-        top_p: 1,
         max_tokens: 1024,
       }),
     });
