@@ -1,6 +1,22 @@
 import { useState, useCallback, useEffect } from 'react';
 import { storage } from '../lib/storage';
 
+function explainError(status) {
+  switch (status) {
+    case 503:
+      return "**The AI model is busy right now (503).**\n\nGemini runs on shared Google servers used by everyone worldwide. When total demand spikes, Google temporarily turns away some requests — this isn't caused by your usage. We retried automatically, but it's still overloaded. Please try again in a few minutes.";
+    case 429:
+      return "**Usage limit reached (429).**\n\nThis API key has hit its request quota for now. Wait a minute (or until the daily limit resets) and try again.";
+    case 401:
+    case 403:
+      return "**Authentication problem.**\n\nThe server's Gemini API key is missing, invalid, or not permitted. Check `GEMINI_API_KEY` in your environment settings.";
+    case 500:
+      return "**Server error (500).**\n\nSomething went wrong on our server while contacting the AI. Please try again.";
+    default:
+      return "**Couldn't reach the AI backend.**\n\nCheck your internet connection and make sure the server is running, then try again.";
+  }
+}
+
 export function useChat(session, isGuest) {
   const [messages, setMessages] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -123,7 +139,9 @@ export function useChat(session, isGuest) {
 
       if (!response.ok) {
         const errText = await response.text();
-        throw new Error(`Server returned ${response.status}: ${errText}`);
+        const err = new Error(`Server returned ${response.status}: ${errText}`);
+        err.status = response.status;
+        throw err;
       }
 
       const reader = response.body.getReader();
@@ -173,7 +191,7 @@ export function useChat(session, isGuest) {
         const lastIdx = msgs.length - 1;
         msgs[lastIdx] = {
            ...msgs[lastIdx],
-           content: msgs[lastIdx].content + "\n\n*(Error connecting to AI backend)*"
+           content: (msgs[lastIdx].content ? msgs[lastIdx].content + "\n\n" : "") + explainError(apiError.status)
         };
         return msgs;
       });
