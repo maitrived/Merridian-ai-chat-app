@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import dotenv from 'dotenv'
+import { isAdminRequest, errorMessage } from './server/errorMessages.js'
 
 dotenv.config({ override: true })
 
@@ -84,8 +85,10 @@ CRITICAL: Do not assume genders. Always use gender-neutral language (they/them/t
           if (!nvidiaRes.ok) {
             const errText = await nvidiaRes.text();
             console.error('[Merridian] Gemini API ERROR:', nvidiaRes.status, errText);
+            const admin = await isAdminRequest(req.headers.authorization);
             res.statusCode = nvidiaRes.status;
-            res.end(errText);
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify({ message: errorMessage(nvidiaRes.status, admin) }));
             return;
           }
 
@@ -119,8 +122,10 @@ CRITICAL: Do not assume genders. Always use gender-neutral language (they/them/t
 
         } catch (err) {
           console.error("Vite Proxy Internal Error:", err);
+          const admin = await isAdminRequest(req.headers.authorization);
           res.statusCode = 500;
-          res.end(JSON.stringify({ error: err.message }));
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ message: errorMessage(500, admin) }));
         }
       })
     })

@@ -1,3 +1,5 @@
+import { isAdminRequest, errorMessage } from '../server/errorMessages.js';
+
 export const config = {
   runtime: 'edge',
 };
@@ -51,12 +53,18 @@ export default async function handler(req) {
     });
   }
 
-  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-  if (!GEMINI_API_KEY) {
-    return new Response(JSON.stringify({ error: 'Gemini API Key not configured' }), { 
-      status: 500,
+  const fail = async (status, code = status) => {
+    const admin = await isAdminRequest(authHeader);
+    return new Response(JSON.stringify({ message: errorMessage(code, admin) }), {
+      status,
       headers: { 'Content-Type': 'application/json' }
     });
+  };
+
+  const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_API_KEY) {
+    console.error('API Chat Error: GEMINI_API_KEY not configured');
+    return fail(500, 'no-key');
   }
 
   // Map our model names to Gemini model names
@@ -91,8 +99,8 @@ export default async function handler(req) {
     }
 
     if (!response.ok) {
-      const errorData = await response.json();
-      return new Response(JSON.stringify(errorData), { status: response.status });
+      console.error('Gemini API Error:', response.status, await response.text());
+      return fail(response.status);
     }
 
     if (stream) {
@@ -111,9 +119,6 @@ export default async function handler(req) {
     }
   } catch (error) {
     console.error("API Chat Error:", error.message);
-    return new Response(JSON.stringify({ error: "An internal server error occurred." }), { 
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return fail(500);
   }
 }

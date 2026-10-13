@@ -1,48 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { storage } from '../lib/storage';
 
-const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '')
-  .split(',')
-  .map(e => e.trim().toLowerCase())
-  .filter(Boolean);
-
-function isAdmin(session) {
-  const email = session?.user?.email?.toLowerCase();
-  return !!email && ADMIN_EMAILS.includes(email);
-}
-
-// Messages shown to the developer/admin — technical, mention your own API usage.
-function adminError(status) {
-  switch (status) {
-    case 503:
-      return "**[Admin] Gemini is overloaded (503).**\n\nGoogle's shared servers are at capacity. This is not caused by your API usage or quota. Retried 3 times automatically. Try again in a few minutes, or switch to a less busy model.";
-    case 429:
-      return "**[Admin] Your Gemini quota is exhausted (429).**\n\nYour API key has hit its per-minute or daily limit. Wait for the reset, or upgrade the plan in Google AI Studio.";
-    case 401:
-    case 403:
-      return "**[Admin] Gemini rejected your API key.**\n\nCheck that `GEMINI_API_KEY` is set correctly in Vercel → Settings → Environment Variables, then redeploy.";
-    case 500:
-      return "**[Admin] Server error (500).**\n\nCheck Vercel → Logs for details. If the message is 'Gemini API Key not configured', set `GEMINI_API_KEY` in Vercel.";
-    default:
-      return `**[Admin] Request failed${status ? ` (${status})` : ''}.**\n\nThe /api/chat function couldn't be reached. Check the Vercel deployment status and logs.`;
-  }
-}
-
-// Messages shown to all other users — no internal details.
-function userError(status) {
-  switch (status) {
-    case 503:
-      return "**Merridian is experiencing high demand right now.**\n\nPlease try again in a few minutes. If this keeps happening, please contact the admin.";
-    case 429:
-      return "**Merridian has reached its usage limit for now.**\n\nPlease try again later. If this keeps happening, please contact the admin.";
-    default:
-      return "**Something went wrong while generating a response.**\n\nPlease try again shortly. If the problem continues, please contact the admin.";
-  }
-}
-
-function explainError(status, session) {
-  return isAdmin(session) ? adminError(status) : userError(status);
-}
+// The server decides the wording (admin vs regular user). This is only a fallback
+// for when the server can't be reached at all.
+const FALLBACK_ERROR = "**Something went wrong while generating a response.**\n\nPlease try again shortly. If the problem continues, please contact the admin.";
 
 export function useChat(session, isGuest) {
   const [messages, setMessages] = useState([]);
@@ -165,9 +126,10 @@ export function useChat(session, isGuest) {
       });
 
       if (!response.ok) {
-        const errText = await response.text();
-        const err = new Error(`Server returned ${response.status}: ${errText}`);
-        err.status = response.status;
+        let serverMessage = null;
+        try { serverMessage = (await response.json()).message; } catch { /* non-JSON */ }
+        const err = new Error(`Server returned ${response.status}`);
+        err.userMessage = serverMessage;
         throw err;
       }
 
@@ -218,7 +180,7 @@ export function useChat(session, isGuest) {
         const lastIdx = msgs.length - 1;
         msgs[lastIdx] = {
            ...msgs[lastIdx],
-           content: (msgs[lastIdx].content ? msgs[lastIdx].content + "\n\n" : "") + explainError(apiError.status, session)
+           content: (msgs[lastIdx].content ? msgs[lastIdx].content + "\n\n" : "") + (apiError.userMessage || FALLBACK_ERROR)
         };
         return msgs;
       });
