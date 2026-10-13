@@ -60,27 +60,20 @@ CRITICAL: Do not assume genders. Always use gender-neutral language (they/them/t
           console.log('[Merridian] GEMINI_API_KEY loaded:', apiKey ? `${apiKey.substring(0,8)}...` : 'MISSING!');
           console.log('[Merridian] Using model:', geminiModel);
 
-          const payload = JSON.stringify({
-            model: geminiModel,
-            messages: finalMessages,
-            stream: stream,
-            temperature: options.temperature || 0.5,
-            max_tokens: 1024,
+          const nvidiaRes = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`,
+            },
+            body: JSON.stringify({
+              model: geminiModel,
+              messages: finalMessages,
+              stream: stream,
+              temperature: options.temperature || 0.5,
+              max_tokens: 1024,
+            }),
           });
-          let nvidiaRes;
-          for (let attempt = 0; attempt < 3; attempt++) {
-            nvidiaRes = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`,
-              },
-              body: payload,
-            });
-            if (nvidiaRes.status !== 503 && nvidiaRes.status !== 500) break;
-            console.warn(`[Merridian] Gemini ${nvidiaRes.status} on attempt ${attempt + 1}/3`);
-            if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));
-          }
 
           if (!nvidiaRes.ok) {
             const errText = await nvidiaRes.text();

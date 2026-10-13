@@ -77,26 +77,20 @@ export default async function handler(req) {
   const geminiModel = modelMap[model] || 'gemini-3.6-flash';
 
   try {
-    const payload = JSON.stringify({
-      model: geminiModel,
-      messages: prepareMessages(messages),
-      stream: stream,
-      temperature: options.temperature || 0.5,
-      max_tokens: 1024,
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GEMINI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: geminiModel,
+        messages: prepareMessages(messages),
+        stream: stream,
+        temperature: options.temperature || 0.5,
+        max_tokens: 1024,
+      }),
     });
-    let response;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      response = await fetch('https://generativelanguage.googleapis.com/v1beta/openai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GEMINI_API_KEY}`,
-        },
-        body: payload,
-      });
-      if (response.status !== 503 && response.status !== 500) break;
-      if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));
-    }
 
     if (!response.ok) {
       console.error('Gemini API Error:', response.status, await response.text());

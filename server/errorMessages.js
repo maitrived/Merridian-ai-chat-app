@@ -21,18 +21,25 @@ export async function isAdminRequest(authHeader) {
     .split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
   const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
   const anonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
-  if (!admins.length || !url || !anonKey || !authHeader?.startsWith('Bearer ')) return false;
+  const fail = (reason) => { console.warn('[admin-check] not admin:', reason); return false; };
+
+  if (!admins.length) return fail('ADMIN_EMAIL env var is empty/missing on server');
+  if (!url) return fail('SUPABASE_URL / VITE_SUPABASE_URL missing on server');
+  if (!anonKey) return fail('SUPABASE_ANON_KEY / VITE_SUPABASE_ANON_KEY missing on server');
+  if (!authHeader?.startsWith('Bearer ')) return fail('no Authorization header (guest or not logged in)');
 
   try {
     const base = url.startsWith('http') ? url : `https://${url}`;
     const res = await fetch(`${base.replace(/\/$/, '')}/auth/v1/user`, {
       headers: { Authorization: authHeader, apikey: anonKey },
     });
-    if (!res.ok) return false;
+    if (!res.ok) return fail(`Supabase token check returned ${res.status}`);
     const user = await res.json();
-    return admins.includes((user.email || '').toLowerCase());
-  } catch {
-    return false;
+    const email = (user.email || '').toLowerCase();
+    if (!admins.includes(email)) return fail(`logged-in email "${email}" not in ADMIN_EMAIL`);
+    return true;
+  } catch (e) {
+    return fail(`Supabase request error: ${e.message}`);
   }
 }
 
