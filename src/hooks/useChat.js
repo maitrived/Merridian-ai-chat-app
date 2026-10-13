@@ -1,20 +1,47 @@
 import { useState, useCallback, useEffect } from 'react';
 import { storage } from '../lib/storage';
 
-function explainError(status) {
+const ADMIN_EMAILS = (import.meta.env.VITE_ADMIN_EMAIL || '')
+  .split(',')
+  .map(e => e.trim().toLowerCase())
+  .filter(Boolean);
+
+function isAdmin(session) {
+  const email = session?.user?.email?.toLowerCase();
+  return !!email && ADMIN_EMAILS.includes(email);
+}
+
+// Messages shown to the developer/admin — technical, mention your own API usage.
+function adminError(status) {
   switch (status) {
     case 503:
-      return "**The AI model is busy right now (503).**\n\nGemini runs on shared Google servers used by everyone worldwide. When total demand spikes, Google temporarily turns away some requests — this isn't caused by your usage. We retried automatically, but it's still overloaded. Please try again in a few minutes.";
+      return "**[Admin] Gemini is overloaded (503).**\n\nGoogle's shared servers are at capacity. This is not caused by your API usage or quota. Retried 3 times automatically. Try again in a few minutes, or switch to a less busy model.";
     case 429:
-      return "**Usage limit reached (429).**\n\nThis API key has hit its request quota for now. Wait a minute (or until the daily limit resets) and try again.";
+      return "**[Admin] Your Gemini quota is exhausted (429).**\n\nYour API key has hit its per-minute or daily limit. Wait for the reset, or upgrade the plan in Google AI Studio.";
     case 401:
     case 403:
-      return "**Authentication problem.**\n\nThe server's Gemini API key is missing, invalid, or not permitted. Check `GEMINI_API_KEY` in your environment settings.";
+      return "**[Admin] Gemini rejected your API key.**\n\nCheck that `GEMINI_API_KEY` is set correctly in Vercel → Settings → Environment Variables, then redeploy.";
     case 500:
-      return "**Server error (500).**\n\nSomething went wrong on our server while contacting the AI. Please try again.";
+      return "**[Admin] Server error (500).**\n\nCheck Vercel → Logs for details. If the message is 'Gemini API Key not configured', set `GEMINI_API_KEY` in Vercel.";
     default:
-      return "**Couldn't reach the AI backend.**\n\nCheck your internet connection and make sure the server is running, then try again.";
+      return `**[Admin] Request failed${status ? ` (${status})` : ''}.**\n\nThe /api/chat function couldn't be reached. Check the Vercel deployment status and logs.`;
   }
+}
+
+// Messages shown to all other users — no internal details.
+function userError(status) {
+  switch (status) {
+    case 503:
+      return "**Merridian is experiencing high demand right now.**\n\nPlease try again in a few minutes. If this keeps happening, please contact the admin.";
+    case 429:
+      return "**Merridian has reached its usage limit for now.**\n\nPlease try again later. If this keeps happening, please contact the admin.";
+    default:
+      return "**Something went wrong while generating a response.**\n\nPlease try again shortly. If the problem continues, please contact the admin.";
+  }
+}
+
+function explainError(status, session) {
+  return isAdmin(session) ? adminError(status) : userError(status);
 }
 
 export function useChat(session, isGuest) {
@@ -191,7 +218,7 @@ export function useChat(session, isGuest) {
         const lastIdx = msgs.length - 1;
         msgs[lastIdx] = {
            ...msgs[lastIdx],
-           content: (msgs[lastIdx].content ? msgs[lastIdx].content + "\n\n" : "") + explainError(apiError.status)
+           content: (msgs[lastIdx].content ? msgs[lastIdx].content + "\n\n" : "") + explainError(apiError.status, session)
         };
         return msgs;
       });
